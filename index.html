@@ -241,11 +241,11 @@ Inkluder alle spørgsmål — ingen svar, ingen forklaringer.`
 
       setProgress(35, 'Spørgsmål fundet — løser nu hvert spørgsmål...');
 
-      let lines = questionsRaw.split('\n').filter(l => /^\d+[\.\)]\s/.test(l.trim()));
+      let lines = questionsRaw.split('\n').filter(l => /^(\d+[\.\)]|[a-zA-Z][\.\)])\s/.test(l.trim()));
       if (lines.length === 0) {
         lines = questionsRaw.split('\n').filter(l => l.trim().length > 10);
       }
-      const questions = lines.map(l => l.replace(/^\d+[\.\)]\s*/, '').trim()).filter(q => q.length > 0);
+      const questions = lines.map(l => l.replace(/^(\d+[\.\)]|[a-zA-Z][\.\)])\s*/, '').trim()).filter(q => q.length > 0);
 
       if (questions.length === 0) throw new Error('Kunne ikke finde spørgsmål — prøv et tydeligere billede eller PDF.');
 
