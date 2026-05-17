@@ -251,12 +251,11 @@ Inkluder kun selve spørgsmålene — ingen svar, ingen forklaringer.`
         setProgress(pct, `Løser spørgsmål ${i+1} af ${questions.length}...`);
 
         const answer = await callClaude(apiKey, [contentBlock],
-          `Du er statistikekspert. Løs dette spørgsmål fuldstændigt på dansk:
+          `Du er statistikekspert. Besvar dette spørgsmål kort og præcist på dansk:
 
 ${questions[i]}
 
-Vis alle mellemregninger trin for trin. Forklar hvad hvert trin betyder statistisk. Afslut med en klar konklusion.
-Skriv i klart tekst uden markdown som **, # eller *.`
+Giv kun det endelige svar — ingen lange udregninger, ingen forklaringer. Bare et klart, direkte svar.`
         );
 
         parsedQA.push({ q: questions[i], a: answer });
