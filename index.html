@@ -229,18 +229,23 @@
       setProgress(15, 'Claude analyserer opgaven og finder spørgsmål...');
 
       const questionsRaw = await callClaude(apiKey, [contentBlock],
-        `Du ser en statistikopgave. Identificer og list ALLE delspørgsmål i opgaven.
-Svar KUN med en nummereret liste over spørgsmålene, præcist som de er formuleret.
+        `Du ser en opgave. Identificer og list ALLE delspørgsmål i opgaven.
+Svar KUN med en nummereret liste. Hvert spørgsmål på sin egen linje.
 Format:
 1. [spørgsmål]
 2. [spørgsmål]
-Inkluder kun selve spørgsmålene — ingen svar, ingen forklaringer.`
+Hvis der kun er ét spørgsmål, skriv bare:
+1. [spørgsmål]
+Inkluder alle spørgsmål — ingen svar, ingen forklaringer.`
       );
 
       setProgress(35, 'Spørgsmål fundet — løser nu hvert spørgsmål...');
 
-      const lines = questionsRaw.split('\n').filter(l => /^\d+\./.test(l.trim()));
-      const questions = lines.map(l => l.replace(/^\d+\.\s*/, '').trim()).filter(q => q.length > 0);
+      let lines = questionsRaw.split('\n').filter(l => /^\d+[\.\)]\s/.test(l.trim()));
+      if (lines.length === 0) {
+        lines = questionsRaw.split('\n').filter(l => l.trim().length > 10);
+      }
+      const questions = lines.map(l => l.replace(/^\d+[\.\)]\s*/, '').trim()).filter(q => q.length > 0);
 
       if (questions.length === 0) throw new Error('Kunne ikke finde spørgsmål — prøv et tydeligere billede eller PDF.');
 
