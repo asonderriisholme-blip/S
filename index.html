@@ -9,117 +9,277 @@
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     body {
       font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #f5f4f0;
+      background: #f5f5f5;
       min-height: 100vh;
-      display: flex;
-      align-items: flex-start;
-      justify-content: center;
-      padding: 40px 16px;
       color: #1a1a1a;
+      display: flex;
     }
-    .container { width: 100%; max-width: 680px; }
-    .header { margin-bottom: 32px; }
-    .header h1 { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; color: #111; margin-bottom: 6px; }
-    .header p { font-size: 14px; color: #888; }
-    .badge { display: inline-block; font-size: 11px; background: #e8f4ff; color: #185FA5; border-radius: 6px; padding: 2px 8px; margin-left: 8px; font-weight: 500; }
-    .api-row { display: flex; gap: 8px; margin-bottom: 8px; }
-    .api-row input { flex: 1; padding: 10px 14px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; background: white; color: #111; outline: none; transition: border-color 0.15s; }
-    .api-row input:focus { border-color: #185FA5; }
-    .api-row input::placeholder { color: #bbb; }
-    .api-link { font-size: 12px; color: #888; margin-bottom: 20px; }
-    .api-link a { color: #185FA5; text-decoration: none; }
-    .api-link a:hover { text-decoration: underline; }
-    .drop-zone { border: 2px dashed #ccc; border-radius: 14px; background: white; padding: 48px 24px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; position: relative; margin-bottom: 12px; }
-    .drop-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-    .drop-zone.drag-over { border-color: #185FA5; background: #f0f6ff; }
-    .drop-zone.has-file { border-style: solid; border-color: #0F6E56; background: #f0faf6; padding: 24px; }
-    .drop-icon { font-size: 40px; margin-bottom: 12px; }
-    .drop-title { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
-    .drop-sub { font-size: 13px; color: #999; }
-    .file-preview { display: none; align-items: center; gap: 12px; text-align: left; }
-    .file-preview.visible { display: flex; }
-    .file-icon { font-size: 32px; }
-    .file-meta { flex: 1; }
-    .file-name { font-size: 15px; font-weight: 500; color: #0F6E56; }
-    .file-size { font-size: 12px; color: #888; margin-top: 2px; }
-    .file-remove { background: none; border: none; font-size: 20px; cursor: pointer; color: #aaa; padding: 4px; line-height: 1; }
-    .file-remove:hover { color: #e24b4a; }
-    .solve-btn { width: 100%; padding: 14px; background: #185FA5; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.15s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; }
-    .solve-btn:hover:not(:disabled) { background: #0C447C; }
-    .solve-btn:active:not(:disabled) { transform: scale(0.98); }
-    .solve-btn:disabled { background: #e0e0e0; color: #aaa; cursor: not-allowed; }
-    .status { display: none; flex-direction: column; gap: 12px; margin-top: 20px; }
-    .status-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #666; }
-    .spinner { width: 18px; height: 18px; border: 2px solid #ddd; border-top-color: #185FA5; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+
+    /* Sidebar */
+    .sidebar {
+      width: 200px;
+      min-height: 100vh;
+      background: #2d3b45;
+      color: white;
+      flex-shrink: 0;
+      padding: 0;
+    }
+    .sidebar-logo {
+      background: #1a252f;
+      padding: 16px;
+      font-size: 22px;
+      font-weight: 700;
+      color: white;
+      letter-spacing: 1px;
+      border-bottom: 1px solid #3a4d5c;
+    }
+    .sidebar-item {
+      display: block;
+      padding: 12px 16px;
+      color: #ccc;
+      font-size: 13px;
+      text-decoration: none;
+      cursor: pointer;
+      border-left: 3px solid transparent;
+    }
+    .sidebar-item:hover { background: #3a4d5c; color: white; }
+    .sidebar-item.active { background: #3a4d5c; color: white; border-left-color: #e66000; }
+
+    /* Main */
+    .main { flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+
+    /* Top bar */
+    .topbar {
+      background: white;
+      border-bottom: 1px solid #ddd;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .topbar-title { font-size: 15px; font-weight: 600; color: #333; }
+    .topbar-right { display: flex; align-items: center; gap: 12px; }
+    .topbar-btn {
+      font-size: 12px;
+      padding: 5px 12px;
+      border-radius: 4px;
+      border: 1px solid #ddd;
+      background: white;
+      color: #555;
+      cursor: pointer;
+    }
+
+    /* Content area */
+    .content { padding: 24px; max-width: 900px; }
+
+    /* Canvas-style section headers */
+    .section-header {
+      background: #e8e8e8;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 0;
+      border: 1px solid #ccc;
+      border-bottom: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .section-body {
+      border: 1px solid #ccc;
+      background: white;
+      margin-bottom: 16px;
+    }
+    .file-row {
+      display: flex;
+      align-items: center;
+      padding: 10px 16px;
+      border-bottom: 1px solid #eee;
+      font-size: 14px;
+      color: #333;
+      gap: 10px;
+      cursor: pointer;
+      position: relative;
+    }
+    .file-row:last-child { border-bottom: none; }
+    .file-row:hover { background: #f9f9f9; }
+    .file-row input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .file-icon-sm { font-size: 16px; color: #888; }
+    .file-link { color: #0770a2; text-decoration: none; font-size: 14px; }
+    .file-link:hover { text-decoration: underline; }
+    .file-tag { margin-left: auto; font-size: 11px; background: #e8f4e8; color: #2d7a2d; padding: 2px 8px; border-radius: 10px; }
+    .file-tag.waiting { background: #fff3e0; color: #e65c00; }
+
+    /* Hidden API input */
+    .api-section {
+      border: 1px solid #ccc;
+      background: white;
+      margin-bottom: 16px;
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .api-section label { font-size: 12px; color: #888; white-space: nowrap; }
+    .api-section input {
+      flex: 1;
+      padding: 5px 10px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #333;
+      outline: none;
+      background: #fafafa;
+    }
+    .api-section input:focus { border-color: #0770a2; }
+
+    /* Submit button styled as Canvas button */
+    .solve-btn {
+      padding: 8px 18px;
+      background: #e66000;
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s;
+      margin-left: auto;
+      display: block;
+    }
+    .solve-btn:hover:not(:disabled) { background: #c45500; }
+    .solve-btn:disabled { background: #ccc; cursor: not-allowed; }
+
+    .status { display: none; flex-direction: column; gap: 8px; margin: 12px 0; padding: 10px 16px; background: #f0f7ff; border: 1px solid #b8d9f0; border-radius: 4px; }
+    .status-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #0770a2; }
+    .spinner { width: 14px; height: 14px; border: 2px solid #b8d9f0; border-top-color: #0770a2; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .progress-bar-wrap { height: 4px; background: #e5e5e5; border-radius: 4px; overflow: hidden; }
-    .progress-bar { height: 100%; background: #185FA5; border-radius: 4px; width: 0%; transition: width 0.4s ease; }
-    .error-box { display: none; margin-top: 14px; padding: 12px 16px; background: #fff0f0; border: 1px solid #f0a0a0; border-radius: 10px; font-size: 13px; color: #a00; }
-    .result-box { display: none; margin-top: 20px; background: white; border: 1px solid #e5e5e5; border-radius: 14px; overflow: hidden; }
-    .result-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: #f9f9f7; border-bottom: 1px solid #eee; }
-    .result-header span { font-size: 14px; font-weight: 500; color: #0F6E56; }
-    .dl-btn { font-size: 13px; padding: 7px 14px; border-radius: 8px; border: none; background: #185FA5; color: white; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s; }
-    .dl-btn:hover { background: #0C447C; }
-    .result-preview { padding: 24px; max-height: 500px; overflow-y: auto; }
-    .q-block { margin-bottom: 28px; }
-    .q-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #185FA5; margin-bottom: 6px; }
-    .q-text { font-size: 14px; font-weight: 500; color: #111; line-height: 1.6; margin-bottom: 12px; padding: 12px 14px; background: #f5f4f0; border-radius: 8px; border-left: 3px solid #185FA5; }
-    .a-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #0F6E56; margin-bottom: 6px; }
-    .a-text { font-size: 14px; color: #1a1a1a; line-height: 1.8; white-space: pre-wrap; }
-    .divider { border: none; border-top: 1px solid #eee; margin: 24px 0; }
+    .progress-bar-wrap { height: 3px; background: #ddd; border-radius: 3px; overflow: hidden; }
+    .progress-bar { height: 100%; background: #0770a2; border-radius: 3px; width: 0%; transition: width 0.4s ease; }
+
+    .error-box { display: none; margin: 8px 0; padding: 10px 16px; background: #fff0f0; border: 1px solid #f0a0a0; border-radius: 4px; font-size: 13px; color: #a00; }
+
+    .result-box { display: none; margin-top: 16px; background: white; border: 1px solid #ccc; }
+    .result-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #e8e8e8; border-bottom: 1px solid #ccc; }
+    .result-header span { font-size: 13px; font-weight: 600; color: #333; }
+    .dl-btn { font-size: 12px; padding: 5px 12px; border-radius: 4px; border: 1px solid #0770a2; background: white; color: #0770a2; cursor: pointer; }
+    .dl-btn:hover { background: #0770a2; color: white; }
+    .result-preview { padding: 16px; max-height: 500px; overflow-y: auto; }
+    .q-block { margin-bottom: 20px; }
+    .q-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: #0770a2; margin-bottom: 4px; }
+    .q-text { font-size: 13px; font-weight: 500; color: #333; line-height: 1.5; margin-bottom: 8px; padding: 8px 12px; background: #f5f5f5; border-left: 3px solid #0770a2; }
+    .a-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: #2d7a2d; margin-bottom: 4px; }
+    .a-text { font-size: 13px; color: #333; line-height: 1.7; white-space: pre-wrap; }
+    .divider { border: none; border-top: 1px solid #eee; margin: 16px 0; }
   </style>
 </head>
 <body>
-<div class="container">
-  <div class="header">
-    <h1>Statistik Opgaveløser <span class="badge">Claude AI</span></h1>
-    <p>Upload din opgave — AI finder spørgsmålene, svarer på dem og laver en færdig PDF</p>
-  </div>
 
-  <div class="api-row">
-    <input type="password" id="api-key" placeholder="Indsæt din Anthropic API-nøgle her (sk-ant-...)"/>
-  </div>
-  <p class="api-link">
-    Nøgle på <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a> → API Keys → Create Key
-  </p>
+<!-- Sidebar -->
+<div class="sidebar">
+  <div class="sidebar-logo">CBS</div>
+  <a class="sidebar-item active">Home</a>
+  <a class="sidebar-item">Announcements</a>
+  <a class="sidebar-item">Discussions</a>
+  <a class="sidebar-item">Grades</a>
+  <a class="sidebar-item">People</a>
+  <a class="sidebar-item">Pages</a>
+  <a class="sidebar-item">Files</a>
+  <a class="sidebar-item">Syllabus</a>
+  <a class="sidebar-item">Modules</a>
+  <a class="sidebar-item">Collaborations</a>
+  <a class="sidebar-item">Chat</a>
+  <a class="sidebar-item">Office 365</a>
+  <a class="sidebar-item">Course Evaluation</a>
+  <a class="sidebar-item">Class Notebook</a>
+  <a class="sidebar-item">Course Readings</a>
+  <a class="sidebar-item">Panopto videos</a>
+  <a class="sidebar-item">Lucid (Whiteboard)</a>
+</div>
 
-  <div class="drop-zone" id="drop-zone">
-    <input type="file" id="file-input" accept="image/*,.pdf" />
-    <div id="drop-default">
-      <div class="drop-icon">📄</div>
-      <div class="drop-title">Upload din opgave</div>
-      <div class="drop-sub">PDF eller billede — træk og slip, eller klik for at vælge</div>
+<!-- Main area -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">Home</div>
+    <div class="topbar-right">
+      <button class="topbar-btn">Edit</button>
     </div>
-    <div class="file-preview" id="file-preview">
-      <div class="file-icon" id="file-icon">📄</div>
-      <div class="file-meta">
-        <div class="file-name" id="file-name">—</div>
-        <div class="file-size" id="file-size">—</div>
+  </div>
+
+  <div class="content">
+
+    <!-- API key skjult som en diskret linje -->
+    <div class="api-section">
+      <label>Adgangskode</label>
+      <input type="password" id="api-key" placeholder="sk-ant-..." />
+    </div>
+
+    <!-- Materiale sektion -->
+    <div class="section-header">▼ Materiale</div>
+    <div class="section-body">
+      <div class="section-header" style="background:#f0f0f0; font-size:12px; border:none; border-bottom:1px solid #ddd;">Generelt</div>
+      <div class="file-row">
+        <span class="file-icon-sm">📎</span>
+        <a class="file-link">Course description including examination rules</a>
       </div>
-      <button class="file-remove" id="remove-btn">✕</button>
-    </div>
-  </div>
+      <div class="file-row">
+        <span class="file-icon-sm">📄</span>
+        <a class="file-link">Gamle eksamensopgaver</a>
+      </div>
+      <div class="file-row">
+        <span class="file-icon-sm">📄</span>
+        <a class="file-link">Softwareprogrammet JMP</a>
+      </div>
 
-  <button class="solve-btn" id="solve-btn" disabled>✨ Find spørgsmål og løs opgaven</button>
+      <div class="section-header" style="background:#f0f0f0; font-size:12px; border:none; border-bottom:1px solid #ddd; border-top:1px solid #ddd;">Efterår 2025</div>
+      <div class="file-row">
+        <span class="file-icon-sm">📎</span>
+        <a class="file-link">Forelæsnings- og eksamensplan efterår 2025</a>
+      </div>
+      <div class="file-row">
+        <span class="file-icon-sm">📄</span>
+        <a class="file-link">Newbold et al - supplerende materiale</a>
+      </div>
 
-  <div class="status" id="status">
-    <div class="status-row">
-      <div class="spinner"></div>
-      <span id="status-text">Analyserer opgaven...</span>
-    </div>
-    <div class="progress-bar-wrap">
-      <div class="progress-bar" id="progress-bar"></div>
-    </div>
-  </div>
+      <div class="section-header" style="background:#f0f0f0; font-size:12px; border:none; border-bottom:1px solid #ddd; border-top:1px solid #ddd;">Forår 2026</div>
+      <div class="file-row">
+        <span class="file-icon-sm">📄</span>
+        <a class="file-link">Noter til logistisk regression</a>
+      </div>
 
-  <div class="error-box" id="error-box"></div>
-
-  <div class="result-box" id="result-box">
-    <div class="result-header">
-      <span>✅ Opgaven er løst</span>
-      <button class="dl-btn" id="dl-btn">⬇️ Download PDF igen</button>
+      <!-- Upload fil som ser ud som en normal fil-række -->
+      <div class="file-row" id="drop-zone" style="cursor:pointer;">
+        <input type="file" id="file-input" accept="image/*,.pdf" />
+        <span class="file-icon-sm">📎</span>
+        <span id="drop-label" class="file-link">Forelæsnings- og eksamensplan forår 2026.pdf</span>
+        <span class="file-tag waiting" id="file-tag">Klik for at uploade</span>
+      </div>
     </div>
-    <div class="result-preview" id="result-preview"></div>
+
+    <button class="solve-btn" id="solve-btn" disabled>Indsend opgave</button>
+
+    <div class="status" id="status">
+      <div class="status-row">
+        <div class="spinner"></div>
+        <span id="status-text">Analyserer...</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+    </div>
+
+    <div class="error-box" id="error-box"></div>
+
+    <div class="result-box" id="result-box">
+      <div class="result-header">
+        <span>Besvarelse klar</span>
+        <button class="dl-btn" id="dl-btn">Download PDF</button>
+      </div>
+      <div class="result-preview" id="result-preview"></div>
+    </div>
+
   </div>
 </div>
 
@@ -146,26 +306,15 @@
 
   function setFile(file) {
     currentFile = file;
-    const isPDF = file.name.toLowerCase().endsWith('.pdf');
-    document.getElementById('file-icon').textContent = isPDF ? '📑' : '🖼️';
-    document.getElementById('file-name').textContent = file.name;
-    document.getElementById('file-size').textContent = formatSize(file.size);
-    document.getElementById('drop-default').style.display = 'none';
-    document.getElementById('file-preview').classList.add('visible');
-    dropZone.classList.add('has-file');
+    document.getElementById('drop-label').textContent = file.name;
+    document.getElementById('file-tag').textContent = 'Klar ✓';
+    document.getElementById('file-tag').className = 'file-tag';
     solveBtn.disabled = false;
     resultBox.style.display = 'none';
     errorBox.style.display = 'none';
   }
 
-  document.getElementById('remove-btn').addEventListener('click', e => {
-    e.stopPropagation();
-    currentFile = null; fileInput.value = '';
-    document.getElementById('drop-default').style.display = 'block';
-    document.getElementById('file-preview').classList.remove('visible');
-    dropZone.classList.remove('has-file');
-    solveBtn.disabled = true;
-  });
+  // no remove button in this UI
 
   fileInput.addEventListener('change', e => { if (e.target.files[0]) setFile(e.target.files[0]); });
   dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
