@@ -249,22 +249,29 @@ Inkluder alle spørgsmål — ingen svar, ingen forklaringer.`
 
       if (questions.length === 0) throw new Error('Kunne ikke finde spørgsmål — prøv et tydeligere billede eller PDF.');
 
-      setProgress(40, `Fandt ${questions.length} spørgsmål — løser dem trin for trin...`);
+      setProgress(40, `Fandt ${questions.length} spørgsmål — løser dem alle...`);
 
-      for (let i = 0; i < questions.length; i++) {
-        const pct = 40 + Math.round(((i+1) / questions.length) * 55);
-        setProgress(pct, `Løser spørgsmål ${i+1} af ${questions.length}...`);
+      const allAnswers = await callClaude(apiKey, [contentBlock],
+        `Du er statistikekspert. Besvar hvert af følgende spørgsmål kort og præcist på dansk.
 
-        const answer = await callClaude(apiKey, [contentBlock],
-          `Du er statistikekspert. Besvar dette spørgsmål kort og præcist på dansk:
+${questions.map((q, i) => `${i+1}. ${q}`).join('
+')}
 
-${questions[i]}
+Svar i samme nummererede format:
+1. [svar]
+2. [svar]
+osv.
+Kun det endelige svar — ingen lange udregninger eller forklaringer.`
+      );
 
-Giv kun det endelige svar — ingen lange udregninger, ingen forklaringer. Bare et klart, direkte svar.`
-        );
+      setProgress(90, 'Behandler svar...');
 
-        parsedQA.push({ q: questions[i], a: answer });
-      }
+      const answerLines = allAnswers.split('
+').filter(l => /^\d+[\.)\s]/.test(l.trim()));
+      questions.forEach((q, i) => {
+        const raw = answerLines[i] ? answerLines[i].replace(/^\d+[\.)\s]*/, '').trim() : '';
+        parsedQA.push({ q, a: raw || allAnswers });
+      });
 
       setProgress(100, 'Færdig! Genererer PDF...');
       renderPreview();
