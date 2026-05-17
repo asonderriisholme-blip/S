@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="da">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Statistik Opgaveløser</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: #f5f4f0;
+      min-height: 100vh;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 40px 16px;
+      color: #1a1a1a;
+    }
+    .container { width: 100%; max-width: 680px; }
+    .header { margin-bottom: 32px; }
+    .header h1 { font-size: 26px; font-weight: 600; letter-spacing: -0.5px; color: #111; margin-bottom: 6px; }
+    .header p { font-size: 14px; color: #888; }
+    .badge { display: inline-block; font-size: 11px; background: #e8f4ff; color: #185FA5; border-radius: 6px; padding: 2px 8px; margin-left: 8px; font-weight: 500; }
+    .api-row { display: flex; gap: 8px; margin-bottom: 8px; }
+    .api-row input { flex: 1; padding: 10px 14px; border: 1px solid #ddd; border-radius: 10px; font-size: 14px; background: white; color: #111; outline: none; transition: border-color 0.15s; }
+    .api-row input:focus { border-color: #185FA5; }
+    .api-row input::placeholder { color: #bbb; }
+    .api-link { font-size: 12px; color: #888; margin-bottom: 20px; }
+    .api-link a { color: #185FA5; text-decoration: none; }
+    .api-link a:hover { text-decoration: underline; }
+    .drop-zone { border: 2px dashed #ccc; border-radius: 14px; background: white; padding: 48px 24px; text-align: center; cursor: pointer; transition: border-color 0.2s, background 0.2s; position: relative; margin-bottom: 12px; }
+    .drop-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .drop-zone.drag-over { border-color: #185FA5; background: #f0f6ff; }
+    .drop-zone.has-file { border-style: solid; border-color: #0F6E56; background: #f0faf6; padding: 24px; }
+    .drop-icon { font-size: 40px; margin-bottom: 12px; }
+    .drop-title { font-size: 16px; font-weight: 500; margin-bottom: 4px; }
+    .drop-sub { font-size: 13px; color: #999; }
+    .file-preview { display: none; align-items: center; gap: 12px; text-align: left; }
+    .file-preview.visible { display: flex; }
+    .file-icon { font-size: 32px; }
+    .file-meta { flex: 1; }
+    .file-name { font-size: 15px; font-weight: 500; color: #0F6E56; }
+    .file-size { font-size: 12px; color: #888; margin-top: 2px; }
+    .file-remove { background: none; border: none; font-size: 20px; cursor: pointer; color: #aaa; padding: 4px; line-height: 1; }
+    .file-remove:hover { color: #e24b4a; }
+    .solve-btn { width: 100%; padding: 14px; background: #185FA5; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 500; cursor: pointer; transition: background 0.15s, transform 0.1s; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 12px; }
+    .solve-btn:hover:not(:disabled) { background: #0C447C; }
+    .solve-btn:active:not(:disabled) { transform: scale(0.98); }
+    .solve-btn:disabled { background: #e0e0e0; color: #aaa; cursor: not-allowed; }
+    .status { display: none; flex-direction: column; gap: 12px; margin-top: 20px; }
+    .status-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #666; }
+    .spinner { width: 18px; height: 18px; border: 2px solid #ddd; border-top-color: #185FA5; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .progress-bar-wrap { height: 4px; background: #e5e5e5; border-radius: 4px; overflow: hidden; }
+    .progress-bar { height: 100%; background: #185FA5; border-radius: 4px; width: 0%; transition: width 0.4s ease; }
+    .error-box { display: none; margin-top: 14px; padding: 12px 16px; background: #fff0f0; border: 1px solid #f0a0a0; border-radius: 10px; font-size: 13px; color: #a00; }
+    .result-box { display: none; margin-top: 20px; background: white; border: 1px solid #e5e5e5; border-radius: 14px; overflow: hidden; }
+    .result-header { display: flex; align-items: center; justify-content: space-between; padding: 12px 18px; background: #f9f9f7; border-bottom: 1px solid #eee; }
+    .result-header span { font-size: 14px; font-weight: 500; color: #0F6E56; }
+    .dl-btn { font-size: 13px; padding: 7px 14px; border-radius: 8px; border: none; background: #185FA5; color: white; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: background 0.15s; }
+    .dl-btn:hover { background: #0C447C; }
+    .result-preview { padding: 24px; max-height: 500px; overflow-y: auto; }
+    .q-block { margin-bottom: 28px; }
+    .q-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #185FA5; margin-bottom: 6px; }
+    .q-text { font-size: 14px; font-weight: 500; color: #111; line-height: 1.6; margin-bottom: 12px; padding: 12px 14px; background: #f5f4f0; border-radius: 8px; border-left: 3px solid #185FA5; }
+    .a-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: #0F6E56; margin-bottom: 6px; }
+    .a-text { font-size: 14px; color: #1a1a1a; line-height: 1.8; white-space: pre-wrap; }
+    .divider { border: none; border-top: 1px solid #eee; margin: 24px 0; }
+  </style>
+</head>
+<body>
+<div class="container">
+  <div class="header">
+    <h1>Statistik Opgaveløser <span class="badge">Claude AI</span></h1>
+    <p>Upload din opgave — AI finder spørgsmålene, svarer på dem og laver en færdig PDF</p>
+  </div>
+
+  <div class="api-row">
+    <input type="password" id="api-key" placeholder="Indsæt din Anthropic API-nøgle her (sk-ant-...)"/>
+  </div>
+  <p class="api-link">
+    Nøgle på <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a> → API Keys → Create Key
+  </p>
+
+  <div class="drop-zone" id="drop-zone">
+    <input type="file" id="file-input" accept="image/*,.pdf" />
+    <div id="drop-default">
+      <div class="drop-icon">📄</div>
+      <div class="drop-title">Upload din opgave</div>
+      <div class="drop-sub">PDF eller billede — træk og slip, eller klik for at vælge</div>
+    </div>
+    <div class="file-preview" id="file-preview">
+      <div class="file-icon" id="file-icon">📄</div>
+      <div class="file-meta">
+        <div class="file-name" id="file-name">—</div>
+        <div class="file-size" id="file-size">—</div>
+      </div>
+      <button class="file-remove" id="remove-btn">✕</button>
+    </div>
+  </div>
+
+  <button class="solve-btn" id="solve-btn" disabled>✨ Find spørgsmål og løs opgaven</button>
+
+  <div class="status" id="status">
+    <div class="status-row">
+      <div class="spinner"></div>
+      <span id="status-text">Analyserer opgaven...</span>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+  </div>
+
+  <div class="error-box" id="error-box"></div>
+
+  <div class="result-box" id="result-box">
+    <div class="result-header">
+      <span>✅ Opgaven er løst</span>
+      <button class="dl-btn" id="dl-btn">⬇️ Download PDF igen</button>
+    </div>
+    <div class="result-preview" id="result-preview"></div>
+  </div>
+</div>
+
+<script>
+  let currentFile = null;
+  let parsedQA = [];
+
+  const dropZone = document.getElementById('drop-zone');
+  const fileInput = document.getElementById('file-input');
+  const solveBtn = document.getElementById('solve-btn');
+  const statusEl = document.getElementById('status');
+  const statusText = document.getElementById('status-text');
+  const progressBar = document.getElementById('progress-bar');
+  const resultBox = document.getElementById('result-box');
+  const resultPreview = document.getElementById('result-preview');
+  const errorBox = document.getElementById('error-box');
+  const dlBtn = document.getElementById('dl-btn');
+
+  function formatSize(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1024*1024) return Math.round(b/1024) + ' KB';
+    return (b/1024/1024).toFixed(1) + ' MB';
+  }
+
+  function setFile(file) {
+    currentFile = file;
+    const isPDF = file.name.toLowerCase().endsWith('.pdf');
+    document.getElementById('file-icon').textContent = isPDF ? '📑' : '🖼️';
+    document.getElementById('file-name').textContent = file.name;
+    document.getElementById('file-size').textContent = formatSize(file.size);
+    document.getElementById('drop-default').style.display = 'none';
+    document.getElementById('file-preview').classList.add('visible');
+    dropZone.classList.add('has-file');
+    solveBtn.disabled = false;
+    resultBox.style.display = 'none';
+    errorBox.style.display = 'none';
+  }
+
+  document.getElementById('remove-btn').addEventListener('click', e => {
+    e.stopPropagation();
+    currentFile = null; fileInput.value = '';
+    document.getElementById('drop-default').style.display = 'block';
+    document.getElementById('file-preview').classList.remove('visible');
+    dropZone.classList.remove('has-file');
+    solveBtn.disabled = true;
+  });
+
+  fileInput.addEventListener('change', e => { if (e.target.files[0]) setFile(e.target.files[0]); });
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault(); dropZone.classList.remove('drag-over');
+    if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
+  });
+
+  function setProgress(pct, text) {
+    progressBar.style.width = pct + '%';
+    statusText.textContent = text;
+  }
+
+  async function callClaude(apiKey, contentBlocks, prompt) {
+    const messages = [{
+      role: 'user',
+      content: [...contentBlocks, { type: 'text', text: prompt }]
+    }];
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-calls': 'true'
+      },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 4000,
+        messages
+      })
+    });
+
+    if (!response.ok) {
+      const err = await response.json();
+      throw new Error(err.error?.message || 'API-fejl: ' + response.status);
+    }
+
+    const data = await response.json();
+    return data.content.map(b => b.text || '').join('\n').trim();
+  }
+
+  solveBtn.addEventListener('click', async () => {
+    const apiKey = document.getElementById('api-key').value.trim();
+    if (!apiKey) { showError('Du skal indsætte din Anthropic API-nøgle først.'); return; }
+    if (!currentFile) return;
+
+    solveBtn.disabled = true;
+    statusEl.style.display = 'flex';
+    resultBox.style.display = 'none';
+    errorBox.style.display = 'none';
+    parsedQA = [];
+    setProgress(5, 'Indlæser filen...');
+
+    try {
+      const base64Data = await new Promise((res, rej) => {
+        const r = new FileReader();
+        r.onload = () => res(r.result.split(',')[1]);
+        r.onerror = () => rej(new Error('Kunne ikke læse filen'));
+        r.readAsDataURL(currentFile);
+      });
+
+      const isPDF = currentFile.name.toLowerCase().endsWith('.pdf');
+      const mimeType = isPDF ? 'application/pdf' : (currentFile.type || 'image/png');
+
+      // Build content block
+      const contentBlock = isPDF
+        ? { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64Data } }
+        : { type: 'image', source: { type: 'base64', media_type: mimeType, data: base64Data } };
+
+      setProgress(15, 'Claude analyserer opgaven og finder spørgsmål...');
+
+      // Step 1: Extract questions
+      const questionsRaw = await callClaude(apiKey, [contentBlock],
+        `Du ser en statistikopgave. Identificer og list ALLE delspørgsmål i opgaven.
+Svar KUN med en nummereret liste over spørgsmålene, præcist som de er formuleret.
+Format:
+1. [spørgsmål]
+2. [spørgsmål]
+osv.
+Inkluder kun selve spørgsmålene — ingen svar, ingen forklaringer, ingen opgavetekst.`
+      );
+
+      setProgress(35, 'Spørgsmål fundet — løser nu hvert spørgsmål...');
+
+      const lines = questionsRaw.split('\n').filter(l => /^\d+\./.test(l.trim()));
+      const questions = lines.map(l => l.replace(/^\d+\.\s*/, '').trim()).filter(q => q.length > 0);
+
+      if (questions.length === 0) throw new Error('Kunne ikke finde spørgsmål — prøv et tydeligere billede eller PDF.');
+
+      setProgress(40, `Fandt ${questions.length} spørgsmål — løser dem trin for trin...`);
+
+      // Step 2: Solve each question
+      for (let i = 0; i < questions.length; i++) {
+        const pct = 40 + Math.round(((i+1) / questions.length) * 55);
+        setProgress(pct, `Løser spørgsmål ${i+1} af ${questions.length}...`);
+
+        const answer = await callClaude(apiKey, [contentBlock],
+          `Du er statistikekspert og hjælper en studerende med at forstå en opgave.
+Løs dette spørgsmål fra opgaven fuldstændigt på dansk:
+
+${questions[i]}
+
+Vis alle mellemregninger trin for trin. Forklar hvad hvert trin betyder statistisk. Afslut med en klar konklusion.
+Skriv i klart, normalt tekst uden markdown-formatering som **, # eller *.`
+        );
+
+        parsedQA.push({ q: questions[i], a: answer });
+      }
+
+      setProgress(100, 'Færdig! Genererer PDF...');
+      renderPreview();
+
+      setTimeout(() => {
+        generateAndDownloadPDF();
+        statusEl.style.display = 'none';
+        resultBox.style.display = 'block';
+        solveBtn.disabled = false;
+      }, 500);
+
+    } catch (err) {
+      statusEl.style.display = 'none';
+      showError(err.message || 'Der opstod en ukendt fejl.');
+      solveBtn.disabled = false;
+    }
+  });
+
+  function renderPreview() {
+    resultPreview.innerHTML = '';
+    parsedQA.forEach((qa, i) => {
+      const block = document.createElement('div');
+      block.className = 'q-block';
+      block.innerHTML = `
+        <div class="q-label">Spørgsmål ${i+1}</div>
+        <div class="q-text">${esc(qa.q)}</div>
+        <div class="a-label">Svar</div>
+        <div class="a-text">${esc(qa.a)}</div>
+        ${i < parsedQA.length - 1 ? '<hr class="divider">' : ''}
+      `;
+      resultPreview.appendChild(block);
+    });
+  }
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+
+  function generateAndDownloadPDF() {
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit: 'mm', format: 'a4' });
+    const pageW = 210, pageH = 297, margin = 20;
+    const contentW = pageW - margin * 2;
+    let y = margin;
+
+    function checkPage(needed) {
+      if (y + needed > pageH - margin) { doc.addPage(); y = margin; }
+    }
+
+    // Header
+    doc.setFillColor(24, 95, 165);
+    doc.rect(0, 0, pageW, 28, 'F');
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(18);
+    doc.setTextColor(255, 255, 255);
+    doc.text('Statistik Opgave — Løsning', margin, 18);
+    y = 38;
+
+    const dato = new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
+    doc.setFontSize(9); doc.setFont('helvetica', 'normal');
+    doc.setTextColor(120, 120, 120);
+    doc.text('Genereret ' + dato, margin, y);
+    y += 12;
+
+    parsedQA.forEach((qa, i) => {
+      checkPage(20);
+
+      // Question badge
+      doc.setFillColor(232, 244, 255);
+      doc.roundedRect(margin, y, contentW, 7, 2, 2, 'F');
+      doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+      doc.setTextColor(24, 95, 165);
+      doc.text(`SPØRGSMÅL ${i + 1}`, margin + 3, y + 5);
+      y += 10;
+
+      // Question box
+      const qLines = doc.splitTextToSize(qa.q, contentW - 8);
+      const qBoxH = qLines.length * 5.5 + 8;
+      checkPage(qBoxH);
+      doc.setFillColor(245, 244, 240);
+      doc.setDrawColor(24, 95, 165);
+      doc.setLineWidth(0.3);
+      doc.roundedRect(margin, y, contentW, qBoxH, 2, 2, 'FD');
+      doc.setLineWidth(1.5);
+      doc.line(margin, y, margin, y + qBoxH);
+      doc.setFontSize(11); doc.setFont('helvetica', 'bold');
+      doc.setTextColor(17, 17, 17);
+      qLines.forEach((line, li) => { doc.text(line, margin + 5, y + 6 + li * 5.5); });
+      y += qBoxH + 5;
+
+      // Answer label
+      checkPage(8);
+      doc.setFontSize(8); doc.setFont('helvetica', 'bold');
+      doc.setTextColor(15, 110, 86);
+      doc.text('SVAR', margin, y);
+      y += 5;
+
+      // Answer text
+      const aLines = doc.splitTextToSize(qa.a, contentW);
+      aLines.forEach(line => {
+        checkPage(5);
+        doc.setFontSize(10); doc.setFont('helvetica', 'normal');
+        doc.setTextColor(26, 26, 26);
+        doc.text(line, margin, y);
+        y += 5;
+      });
+
+      y += 6;
+
+      if (i < parsedQA.length - 1) {
+        checkPage(5);
+        doc.setDrawColor(220, 220, 220); doc.setLineWidth(0.3);
+        doc.line(margin, y, pageW - margin, y);
+        y += 8;
+      }
+    });
+
+    // Page numbers
+    const total = doc.internal.getNumberOfPages();
+    for (let p = 1; p <= total; p++) {
+      doc.setPage(p);
+      doc.setFontSize(8); doc.setTextColor(180, 180, 180);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Side ${p} af ${total}`, pageW - margin, pageH - 10, { align: 'right' });
+    }
+
+    doc.save('statistik-løsning.pdf');
+  }
+
+  dlBtn.addEventListener('click', generateAndDownloadPDF);
+
+  function showError(msg) {
+    errorBox.textContent = '⚠️ ' + msg;
+    errorBox.style.display = 'block';
+  }
+</script>
+</body>
+</html>
