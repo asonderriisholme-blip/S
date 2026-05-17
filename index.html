@@ -3,283 +3,69 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Statistik Opgaveløser</title>
+  <title>Kursusportal</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-      font-family: 'Segoe UI', system-ui, sans-serif;
-      background: #f5f5f5;
-      min-height: 100vh;
-      color: #1a1a1a;
-      display: flex;
-    }
-
-    /* Sidebar */
-    .sidebar {
-      width: 200px;
-      min-height: 100vh;
-      background: #2d3b45;
-      color: white;
-      flex-shrink: 0;
-      padding: 0;
-    }
-    .sidebar-logo {
-      background: #1a252f;
-      padding: 16px;
-      font-size: 22px;
-      font-weight: 700;
-      color: white;
-      letter-spacing: 1px;
-      border-bottom: 1px solid #3a4d5c;
-    }
-    .sidebar-item {
-      display: block;
-      padding: 12px 16px;
-      color: #ccc;
-      font-size: 13px;
-      text-decoration: none;
-      cursor: pointer;
-      border-left: 3px solid transparent;
-    }
-    .sidebar-item:hover { background: #3a4d5c; color: white; }
-    .sidebar-item.active { background: #3a4d5c; color: white; border-left-color: #e66000; }
-
-    /* Main */
-    .main { flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
-
-    /* Top bar */
-    .topbar {
-      background: white;
-      border-bottom: 1px solid #ddd;
-      padding: 10px 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .topbar-title { font-size: 15px; font-weight: 600; color: #333; }
-    .topbar-right { display: flex; align-items: center; gap: 12px; }
-    .topbar-btn {
-      font-size: 12px;
-      padding: 5px 12px;
-      border-radius: 4px;
-      border: 1px solid #ddd;
-      background: white;
-      color: #555;
-      cursor: pointer;
-    }
-
-    /* Content area */
-    .content { padding: 24px; max-width: 900px; }
-
-    /* Canvas-style section headers */
-    .section-header {
-      background: #e8e8e8;
-      padding: 8px 16px;
-      font-size: 13px;
-      font-weight: 600;
-      color: #333;
-      margin-bottom: 0;
-      border: 1px solid #ccc;
-      border-bottom: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-    .section-body {
-      border: 1px solid #ccc;
-      background: white;
-      margin-bottom: 16px;
-    }
-    .file-row {
-      display: flex;
-      align-items: center;
-      padding: 10px 16px;
-      border-bottom: 1px solid #eee;
-      font-size: 14px;
-      color: #333;
-      gap: 10px;
-      cursor: pointer;
-      position: relative;
-    }
-    .file-row:last-child { border-bottom: none; }
-    .file-row:hover { background: #f9f9f9; }
-    .file-row input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
-    .file-icon-sm { font-size: 16px; color: #888; }
-    .file-link { color: #0770a2; text-decoration: none; font-size: 14px; }
-    .file-link:hover { text-decoration: underline; }
-    .file-tag { margin-left: auto; font-size: 11px; background: #e8f4e8; color: #2d7a2d; padding: 2px 8px; border-radius: 10px; }
-    .file-tag.waiting { background: #fff3e0; color: #e65c00; }
-
-    /* Hidden API input */
-    .api-section {
-      border: 1px solid #ccc;
-      background: white;
-      margin-bottom: 16px;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .api-section label { font-size: 12px; color: #888; white-space: nowrap; }
-    .api-section input {
-      flex: 1;
-      padding: 5px 10px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 13px;
-      color: #333;
-      outline: none;
-      background: #fafafa;
-    }
-    .api-section input:focus { border-color: #0770a2; }
-
-    /* Submit button styled as Canvas button */
-    .solve-btn {
-      padding: 8px 18px;
-      background: #e66000;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: background 0.15s;
-      margin-left: auto;
-      display: block;
-    }
-    .solve-btn:hover:not(:disabled) { background: #c45500; }
-    .solve-btn:disabled { background: #ccc; cursor: not-allowed; }
-
-    .status { display: none; flex-direction: column; gap: 8px; margin: 12px 0; padding: 10px 16px; background: #f0f7ff; border: 1px solid #b8d9f0; border-radius: 4px; }
-    .status-row { display: flex; align-items: center; gap: 10px; font-size: 13px; color: #0770a2; }
-    .spinner { width: 14px; height: 14px; border: 2px solid #b8d9f0; border-top-color: #0770a2; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
+    body { font-family: 'Segoe UI', system-ui, sans-serif; background: #f5f5f5; min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 40px 16px; color: #333; }
+    .box { background: white; border: 1px solid #ddd; border-radius: 6px; padding: 28px; width: 100%; max-width: 480px; }
+    .api-row { display: flex; gap: 8px; margin-bottom: 20px; }
+    .api-row input { flex: 1; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; color: #333; outline: none; }
+    .api-row input:focus { border-color: #888; }
+    .api-row input::placeholder { color: #bbb; }
+    .drop-zone { border: 1px dashed #ccc; border-radius: 4px; background: #fafafa; padding: 32px 16px; text-align: center; cursor: pointer; position: relative; margin-bottom: 14px; transition: background 0.15s; }
+    .drop-zone:hover { background: #f0f0f0; }
+    .drop-zone input[type=file] { position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%; }
+    .drop-zone.has-file { background: #f0fff4; border-color: #aaa; }
+    .drop-text { font-size: 13px; color: #888; }
+    .drop-name { font-size: 13px; color: #333; font-weight: 500; }
+    .btn { width: 100%; padding: 10px; background: #333; color: white; border: none; border-radius: 4px; font-size: 14px; cursor: pointer; transition: background 0.15s; }
+    .btn:hover:not(:disabled) { background: #111; }
+    .btn:disabled { background: #ccc; cursor: not-allowed; }
+    .status { display: none; margin-top: 14px; font-size: 13px; color: #666; display: none; align-items: center; gap: 8px; }
+    .spinner { width: 14px; height: 14px; border: 2px solid #ddd; border-top-color: #333; border-radius: 50%; animation: spin 0.7s linear infinite; flex-shrink: 0; }
     @keyframes spin { to { transform: rotate(360deg); } }
-    .progress-bar-wrap { height: 3px; background: #ddd; border-radius: 3px; overflow: hidden; }
-    .progress-bar { height: 100%; background: #0770a2; border-radius: 3px; width: 0%; transition: width 0.4s ease; }
-
-    .error-box { display: none; margin: 8px 0; padding: 10px 16px; background: #fff0f0; border: 1px solid #f0a0a0; border-radius: 4px; font-size: 13px; color: #a00; }
-
-    .result-box { display: none; margin-top: 16px; background: white; border: 1px solid #ccc; }
-    .result-header { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: #e8e8e8; border-bottom: 1px solid #ccc; }
-    .result-header span { font-size: 13px; font-weight: 600; color: #333; }
-    .dl-btn { font-size: 12px; padding: 5px 12px; border-radius: 4px; border: 1px solid #0770a2; background: white; color: #0770a2; cursor: pointer; }
-    .dl-btn:hover { background: #0770a2; color: white; }
-    .result-preview { padding: 16px; max-height: 500px; overflow-y: auto; }
-    .q-block { margin-bottom: 20px; }
-    .q-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: #0770a2; margin-bottom: 4px; }
-    .q-text { font-size: 13px; font-weight: 500; color: #333; line-height: 1.5; margin-bottom: 8px; padding: 8px 12px; background: #f5f5f5; border-left: 3px solid #0770a2; }
-    .a-label { font-size: 11px; font-weight: 600; text-transform: uppercase; color: #2d7a2d; margin-bottom: 4px; }
-    .a-text { font-size: 13px; color: #333; line-height: 1.7; white-space: pre-wrap; }
-    .divider { border: none; border-top: 1px solid #eee; margin: 16px 0; }
+    .error { display: none; margin-top: 12px; padding: 10px 14px; background: #fff0f0; border: 1px solid #f0a0a0; border-radius: 4px; font-size: 13px; color: #a00; }
+    .result { display: none; margin-top: 16px; border: 1px solid #ddd; border-radius: 4px; overflow: hidden; }
+    .result-top { display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: #f5f5f5; border-bottom: 1px solid #ddd; }
+    .result-top span { font-size: 13px; color: #333; }
+    .dl-btn { font-size: 12px; padding: 4px 10px; border: 1px solid #aaa; border-radius: 4px; background: white; cursor: pointer; color: #333; }
+    .dl-btn:hover { background: #f0f0f0; }
+    .result-body { padding: 16px; max-height: 400px; overflow-y: auto; }
+    .q-block { margin-bottom: 16px; }
+    .q-num { font-size: 11px; color: #999; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px; }
+    .q-text { font-size: 13px; color: #555; margin-bottom: 6px; }
+    .a-text { font-size: 13px; color: #111; line-height: 1.7; white-space: pre-wrap; }
+    .divider { border: none; border-top: 1px solid #eee; margin: 14px 0; }
   </style>
 </head>
 <body>
-
-<!-- Sidebar -->
-<div class="sidebar">
-  <div class="sidebar-logo">CBS</div>
-  <a class="sidebar-item active">Home</a>
-  <a class="sidebar-item">Announcements</a>
-  <a class="sidebar-item">Discussions</a>
-  <a class="sidebar-item">Grades</a>
-  <a class="sidebar-item">People</a>
-  <a class="sidebar-item">Pages</a>
-  <a class="sidebar-item">Files</a>
-  <a class="sidebar-item">Syllabus</a>
-  <a class="sidebar-item">Modules</a>
-  <a class="sidebar-item">Collaborations</a>
-  <a class="sidebar-item">Chat</a>
-  <a class="sidebar-item">Office 365</a>
-  <a class="sidebar-item">Course Evaluation</a>
-  <a class="sidebar-item">Class Notebook</a>
-  <a class="sidebar-item">Course Readings</a>
-  <a class="sidebar-item">Panopto videos</a>
-  <a class="sidebar-item">Lucid (Whiteboard)</a>
-</div>
-
-<!-- Main area -->
-<div class="main">
-  <div class="topbar">
-    <div class="topbar-title">Home</div>
-    <div class="topbar-right">
-      <button class="topbar-btn">Edit</button>
-    </div>
+<div class="box">
+  <div class="api-row">
+    <input type="password" id="api-key" placeholder="API-nøgle (sk-ant-...)" />
   </div>
 
-  <div class="content">
+  <div class="drop-zone" id="drop-zone">
+    <input type="file" id="file-input" accept="image/*,.pdf" />
+    <div id="drop-default"><p class="drop-text">Klik eller træk fil hertil</p></div>
+    <div id="drop-selected" style="display:none"><p class="drop-name" id="drop-name">—</p></div>
+  </div>
 
-    <!-- API key skjult som en diskret linje -->
-    <div class="api-section">
-      <label>Adgangskode</label>
-      <input type="password" id="api-key" placeholder="sk-ant-..." />
+  <button class="btn" id="solve-btn" disabled>Send</button>
+
+  <div class="status" id="status">
+    <div class="spinner"></div>
+    <span id="status-text">Arbejder...</span>
+  </div>
+
+  <div class="error" id="error-box"></div>
+
+  <div class="result" id="result-box">
+    <div class="result-top">
+      <span>Svar klar</span>
+      <button class="dl-btn" id="dl-btn">Download PDF</button>
     </div>
-
-    <!-- Materiale sektion -->
-    <div class="section-header">▼ Materiale</div>
-    <div class="section-body">
-      <div class="section-header" style="background:#f0f0f0; font-size:12px; border:none; border-bottom:1px solid #ddd;">Generelt</div>
-      <div class="file-row">
-        <span class="file-icon-sm">📎</span>
-        <a class="file-link">Course description including examination rules</a>
-      </div>
-      <div class="file-row">
-        <span class="file-icon-sm">📄</span>
-        <a class="file-link">Gamle eksamensopgaver</a>
-      </div>
-      <div class="file-row">
-        <span class="file-icon-sm">📄</span>
-        <a class="file-link">Softwareprogrammet JMP</a>
-      </div>
-
-      <div class="section-header" style="background:#f0f0f0; font-size:12px; border:none; border-bottom:1px solid #ddd; border-top:1px solid #ddd;">Efterår 2025</div>
-      <div class="file-row">
-        <span class="file-icon-sm">📎</span>
-        <a class="file-link">Forelæsnings- og eksamensplan efterår 2025</a>
-      </div>
-      <div class="file-row">
-        <span class="file-icon-sm">📄</span>
-        <a class="file-link">Newbold et al - supplerende materiale</a>
-      </div>
-
-      <div class="section-header" style="background:#f0f0f0; font-size:12px; border:none; border-bottom:1px solid #ddd; border-top:1px solid #ddd;">Forår 2026</div>
-      <div class="file-row">
-        <span class="file-icon-sm">📄</span>
-        <a class="file-link">Noter til logistisk regression</a>
-      </div>
-
-      <!-- Upload fil som ser ud som en normal fil-række -->
-      <div class="file-row" id="drop-zone" style="cursor:pointer;">
-        <input type="file" id="file-input" accept="image/*,.pdf" />
-        <span class="file-icon-sm">📎</span>
-        <span id="drop-label" class="file-link">Forelæsnings- og eksamensplan forår 2026.pdf</span>
-        <span class="file-tag waiting" id="file-tag">Klik for at uploade</span>
-      </div>
-    </div>
-
-    <button class="solve-btn" id="solve-btn" disabled>Indsend opgave</button>
-
-    <div class="status" id="status">
-      <div class="status-row">
-        <div class="spinner"></div>
-        <span id="status-text">Analyserer...</span>
-      </div>
-      <div class="progress-bar-wrap">
-        <div class="progress-bar" id="progress-bar"></div>
-      </div>
-    </div>
-
-    <div class="error-box" id="error-box"></div>
-
-    <div class="result-box" id="result-box">
-      <div class="result-header">
-        <span>Besvarelse klar</span>
-        <button class="dl-btn" id="dl-btn">Download PDF</button>
-      </div>
-      <div class="result-preview" id="result-preview"></div>
-    </div>
-
+    <div class="result-body" id="result-body"></div>
   </div>
 </div>
 
@@ -292,73 +78,36 @@
   const solveBtn = document.getElementById('solve-btn');
   const statusEl = document.getElementById('status');
   const statusText = document.getElementById('status-text');
-  const progressBar = document.getElementById('progress-bar');
   const resultBox = document.getElementById('result-box');
-  const resultPreview = document.getElementById('result-preview');
+  const resultBody = document.getElementById('result-body');
   const errorBox = document.getElementById('error-box');
   const dlBtn = document.getElementById('dl-btn');
 
-  function formatSize(b) {
-    if (b < 1024) return b + ' B';
-    if (b < 1024*1024) return Math.round(b/1024) + ' KB';
-    return (b/1024/1024).toFixed(1) + ' MB';
-  }
-
   function setFile(file) {
     currentFile = file;
-    document.getElementById('drop-label').textContent = file.name;
-    document.getElementById('file-tag').textContent = 'Klar ✓';
-    document.getElementById('file-tag').className = 'file-tag';
+    document.getElementById('drop-default').style.display = 'none';
+    document.getElementById('drop-selected').style.display = 'block';
+    document.getElementById('drop-name').textContent = file.name;
+    dropZone.classList.add('has-file');
     solveBtn.disabled = false;
     resultBox.style.display = 'none';
     errorBox.style.display = 'none';
   }
 
-  // no remove button in this UI
-
   fileInput.addEventListener('change', e => { if (e.target.files[0]) setFile(e.target.files[0]); });
-  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
-  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
-  dropZone.addEventListener('drop', e => {
-    e.preventDefault(); dropZone.classList.remove('drag-over');
-    if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]);
-  });
-
-  function setProgress(pct, text) {
-    progressBar.style.width = pct + '%';
-    statusText.textContent = text;
-  }
-
-  async function callClaude(apiKey, contentBlocks, prompt) {
-    const response = await fetch('/api/claude', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        apiKey,
-        max_tokens: 4000,
-        messages: [{
-          role: 'user',
-          content: [...contentBlocks, { type: 'text', text: prompt }]
-        }]
-      })
-    });
-
-    const data = await response.json();
-    if (!response.ok) throw new Error(data.error || 'API fejl: ' + response.status);
-    return data.content.map(b => b.text || '').join('\n').trim();
-  }
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); });
+  dropZone.addEventListener('drop', e => { e.preventDefault(); if (e.dataTransfer.files[0]) setFile(e.dataTransfer.files[0]); });
 
   solveBtn.addEventListener('click', async () => {
     const apiKey = document.getElementById('api-key').value.trim();
-    if (!apiKey) { showError('Du skal indsætte din Anthropic API-nøgle først.'); return; }
+    if (!apiKey) { showError('Indsæt din API-nøgle.'); return; }
     if (!currentFile) return;
 
     solveBtn.disabled = true;
     statusEl.style.display = 'flex';
     resultBox.style.display = 'none';
     errorBox.style.display = 'none';
-    parsedQA = [];
-    setProgress(5, 'Indlæser filen...');
+    statusText.textContent = 'Læser opgaven...';
 
     try {
       const base64Data = await new Promise((res, rej) => {
@@ -370,88 +119,80 @@
 
       const isPDF = currentFile.name.toLowerCase().endsWith('.pdf');
       const mimeType = isPDF ? 'application/pdf' : (currentFile.type || 'image/png');
-
       const contentBlock = isPDF
         ? { type: 'document', source: { type: 'base64', media_type: 'application/pdf', data: base64Data } }
         : { type: 'image', source: { type: 'base64', media_type: mimeType, data: base64Data } };
 
-      setProgress(15, 'Claude analyserer opgaven og finder spørgsmål...');
+      statusText.textContent = 'Løser opgaven...';
 
-      const questionsRaw = await callClaude(apiKey, [contentBlock],
-        `Du ser en opgave. Identificer og list ALLE delspørgsmål i opgaven.
-Svar KUN med en nummereret liste. Hvert spørgsmål på sin egen linje.
+      const response = await fetch('/api/claude', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          apiKey,
+          max_tokens: 4000,
+          messages: [{
+            role: 'user',
+            content: [
+              contentBlock,
+              { type: 'text', text: `Du er statistikekspert. Læs denne opgave og besvar ALLE delspørgsmål kort og direkte på dansk.
+
+For hvert delspørgsmål (a, b, c, d... eller 1, 2, 3...) giv kun det endelige svar — ingen lange forklaringer, ingen udregninger. Bare svaret.
+
 Format:
-1. [spørgsmål]
-2. [spørgsmål]
-Hvis der kun er ét spørgsmål, skriv bare:
-1. [spørgsmål]
-Inkluder alle spørgsmål — ingen svar, ingen forklaringer.`
-      );
-
-      setProgress(35, 'Spørgsmål fundet — løser nu hvert spørgsmål...');
-
-      let lines = questionsRaw.split('\n').filter(l => /^(\d+[\.\)]|[a-zA-Z][\.\)])\s/.test(l.trim()));
-      if (lines.length === 0) {
-        lines = questionsRaw.split('\n').filter(l => l.trim().length > 10);
-      }
-      const questions = lines.map(l => l.replace(/^(\d+[\.\)]|[a-zA-Z][\.\)])\s*/, '').trim()).filter(q => q.length > 0);
-
-      if (questions.length === 0) throw new Error('Kunne ikke finde spørgsmål — prøv et tydeligere billede eller PDF.');
-
-      setProgress(40, `Fandt ${questions.length} spørgsmål — løser dem alle...`);
-
-      const allAnswers = await callClaude(apiKey, [contentBlock],
-        `Du er statistikekspert. Besvar hvert af følgende spørgsmål kort og præcist på dansk.
-
-${questions.map((q, i) => `${i+1}. ${q}`).join('
-')}
-
-Svar i samme nummererede format:
-1. [svar]
-2. [svar]
-osv.
-Kun det endelige svar — ingen lange udregninger eller forklaringer.`
-      );
-
-      setProgress(90, 'Behandler svar...');
-
-      const answerLines = allAnswers.split('
-').filter(l => /^\d+[\.)\s]/.test(l.trim()));
-      questions.forEach((q, i) => {
-        const raw = answerLines[i] ? answerLines[i].replace(/^\d+[\.)\s]*/, '').trim() : '';
-        parsedQA.push({ q, a: raw || allAnswers });
+a) [svar]
+b) [svar]
+osv.` }
+            ]
+          }]
+        })
       });
 
-      setProgress(100, 'Færdig! Genererer PDF...');
-      renderPreview();
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'API fejl');
 
-      setTimeout(() => {
-        generateAndDownloadPDF();
-        statusEl.style.display = 'none';
-        resultBox.style.display = 'block';
-        solveBtn.disabled = false;
-      }, 500);
+      const rawAnswer = data.content.map(b => b.text || '').join('\n').trim();
+
+      // Parse svar
+      parsedQA = [];
+      const lines = rawAnswer.split('\n').filter(l => l.trim().length > 0);
+      const answerPattern = /^([a-zA-Z]\)|[a-zA-Z]\.|Opgave \d+|Spørgsmål \d+|\d+[\.\)])/;
+      let current = null;
+      for (const line of lines) {
+        if (answerPattern.test(line.trim())) {
+          if (current) parsedQA.push(current);
+          current = { q: line.trim().match(answerPattern)[0], a: line.trim().replace(answerPattern, '').trim() };
+        } else if (current) {
+          current.a += '\n' + line.trim();
+        }
+      }
+      if (current) parsedQA.push(current);
+      if (parsedQA.length === 0) parsedQA = [{ q: '', a: rawAnswer }];
+
+      renderResult();
+      generatePDF();
+      statusEl.style.display = 'none';
+      resultBox.style.display = 'block';
+      solveBtn.disabled = false;
 
     } catch (err) {
       statusEl.style.display = 'none';
-      showError(err.message || 'Der opstod en ukendt fejl.');
+      showError(err.message || 'Ukendt fejl.');
       solveBtn.disabled = false;
     }
   });
 
-  function renderPreview() {
-    resultPreview.innerHTML = '';
+  function renderResult() {
+    resultBody.innerHTML = '';
     parsedQA.forEach((qa, i) => {
       const block = document.createElement('div');
       block.className = 'q-block';
       block.innerHTML = `
-        <div class="q-label">Spørgsmål ${i+1}</div>
-        <div class="q-text">${esc(qa.q)}</div>
-        <div class="a-label">Svar</div>
+        ${qa.q ? `<div class="q-num">${qa.q}</div>` : ''}
         <div class="a-text">${esc(qa.a)}</div>
         ${i < parsedQA.length - 1 ? '<hr class="divider">' : ''}
       `;
-      resultPreview.appendChild(block);
+      resultBody.appendChild(block);
     });
   }
 
@@ -459,90 +200,46 @@ Kun det endelige svar — ingen lange udregninger eller forklaringer.`
     return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  function generateAndDownloadPDF() {
+  function generatePDF() {
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'mm', format: 'a4' });
-    const pageW = 210, pageH = 297, margin = 20;
-    const contentW = pageW - margin * 2;
+    const margin = 20, pageW = 210, pageH = 297, contentW = pageW - margin * 2;
     let y = margin;
 
-    function checkPage(needed) {
-      if (y + needed > pageH - margin) { doc.addPage(); y = margin; }
-    }
+    function checkPage(n) { if (y + n > pageH - margin) { doc.addPage(); y = margin; } }
 
-    doc.setFillColor(24, 95, 165);
-    doc.rect(0, 0, pageW, 28, 'F');
-    doc.setFont('helvetica', 'bold');
-    doc.setFontSize(18);
-    doc.setTextColor(255, 255, 255);
-    doc.text('Statistik Opgave — Løsning', margin, 18);
-    y = 38;
-
-    const dato = new Date().toLocaleDateString('da-DK', { day: 'numeric', month: 'long', year: 'numeric' });
-    doc.setFontSize(9); doc.setFont('helvetica', 'normal');
-    doc.setTextColor(120, 120, 120);
-    doc.text('Genereret ' + dato, margin, y);
-    y += 12;
+    doc.setFontSize(14); doc.setFont('helvetica', 'bold'); doc.setTextColor(50,50,50);
+    doc.text('Besvarelse', margin, y); y += 10;
+    doc.setDrawColor(200,200,200); doc.setLineWidth(0.3); doc.line(margin, y, pageW-margin, y); y += 8;
 
     parsedQA.forEach((qa, i) => {
-      checkPage(20);
-      doc.setFillColor(232, 244, 255);
-      doc.roundedRect(margin, y, contentW, 7, 2, 2, 'F');
-      doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-      doc.setTextColor(24, 95, 165);
-      doc.text(`SPØRGSMÅL ${i + 1}`, margin + 3, y + 5);
-      y += 10;
-
-      const qLines = doc.splitTextToSize(qa.q, contentW - 8);
-      const qBoxH = qLines.length * 5.5 + 8;
-      checkPage(qBoxH);
-      doc.setFillColor(245, 244, 240);
-      doc.setDrawColor(24, 95, 165);
-      doc.setLineWidth(0.3);
-      doc.roundedRect(margin, y, contentW, qBoxH, 2, 2, 'FD');
-      doc.setLineWidth(1.5);
-      doc.line(margin, y, margin, y + qBoxH);
-      doc.setFontSize(11); doc.setFont('helvetica', 'bold');
-      doc.setTextColor(17, 17, 17);
-      qLines.forEach((line, li) => { doc.text(line, margin + 5, y + 6 + li * 5.5); });
-      y += qBoxH + 5;
-
-      checkPage(8);
-      doc.setFontSize(8); doc.setFont('helvetica', 'bold');
-      doc.setTextColor(15, 110, 86);
-      doc.text('SVAR', margin, y);
-      y += 5;
-
+      if (qa.q) {
+        checkPage(8);
+        doc.setFontSize(10); doc.setFont('helvetica', 'bold'); doc.setTextColor(80,80,80);
+        doc.text(qa.q, margin, y); y += 6;
+      }
       const aLines = doc.splitTextToSize(qa.a, contentW);
       aLines.forEach(line => {
         checkPage(5);
-        doc.setFontSize(10); doc.setFont('helvetica', 'normal');
-        doc.setTextColor(26, 26, 26);
-        doc.text(line, margin, y);
-        y += 5;
+        doc.setFontSize(10); doc.setFont('helvetica', 'normal'); doc.setTextColor(30,30,30);
+        doc.text(line, margin, y); y += 5;
       });
-
-      y += 6;
+      y += 4;
       if (i < parsedQA.length - 1) {
-        checkPage(5);
-        doc.setDrawColor(220, 220, 220); doc.setLineWidth(0.3);
-        doc.line(margin, y, pageW - margin, y);
-        y += 8;
+        checkPage(4);
+        doc.setDrawColor(220,220,220); doc.line(margin, y, pageW-margin, y); y += 6;
       }
     });
 
     const total = doc.internal.getNumberOfPages();
     for (let p = 1; p <= total; p++) {
-      doc.setPage(p);
-      doc.setFontSize(8); doc.setTextColor(180, 180, 180);
-      doc.setFont('helvetica', 'normal');
-      doc.text(`Side ${p} af ${total}`, pageW - margin, pageH - 10, { align: 'right' });
+      doc.setPage(p); doc.setFontSize(8); doc.setTextColor(180,180,180);
+      doc.text(`${p} / ${total}`, pageW-margin, pageH-10, { align: 'right' });
     }
-
-    doc.save('statistik-løsning.pdf');
+    doc.save('besvarelse.pdf');
   }
 
-  dlBtn.addEventListener('click', generateAndDownloadPDF);
+  dlBtn.addEventListener('click', generatePDF);
 
   function showError(msg) {
     errorBox.textContent = '⚠️ ' + msg;
